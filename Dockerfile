@@ -12,6 +12,7 @@ RUN apt-get update && apt-get install -y \
   libpng12-dev \
   libpq-dev \
   libxml2-dev \
+  supervisor \
   && rm -rf /var/lib/apt/lists/*
 
 # https://docs.nextcloud.com/server/9/admin_manual/installation/source_installation.html
@@ -53,6 +54,9 @@ RUN curl -fsSL -o nextcloud.tar.bz2 \
  && rm nextcloud.tar.bz2
 
 COPY docker-entrypoint.sh /entrypoint.sh
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+
 
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["php-fpm"]
+CMD ["/usr/bin/supervisord"]
