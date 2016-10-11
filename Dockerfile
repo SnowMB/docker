@@ -55,8 +55,7 @@ RUN curl -fsSL -o nextcloud.tar.bz2 \
  && rm nextcloud.tar.bz2
 
 COPY docker-entrypoint.sh /entrypoint.sh
-RUN touch /var/log/cron.log
-RUN (crontab -u www-data -l ; echo "*/15 * * * * su - www-data -s /bin/bash -c \"php -f /var/www/html/cron.php\"")| crontab -
+RUN echo "*/15 * * * * su - www-data -s /bin/bash -c \"php -f /var/www/html/cron.php\""| crontab -
 COPY supervisord.conf /etc/supervisor/supervisord.conf
 
 
