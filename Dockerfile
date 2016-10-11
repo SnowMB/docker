@@ -13,6 +13,7 @@ RUN apt-get update && apt-get install -y \
   libpq-dev \
   libxml2-dev \
   supervisor \
+  cron \
   && rm -rf /var/lib/apt/lists/*
 
 # https://docs.nextcloud.com/server/9/admin_manual/installation/source_installation.html
@@ -54,7 +55,9 @@ RUN curl -fsSL -o nextcloud.tar.bz2 \
  && rm nextcloud.tar.bz2
 
 COPY docker-entrypoint.sh /entrypoint.sh
-COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+RUN touch /var/log/cron.log
+RUN (crontab -u www-data -l ; echo "*/15 * * * * su - www-data -s /bin/bash -c \"php -f /var/www/html/cron.php\"")| crontab -
+COPY supervisord.conf /etc/supervisor/supervisord.conf
 
 
 
